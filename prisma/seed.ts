@@ -1,59 +1,63 @@
-import { PrismaClient, Role, ProjectStatus, TaskStatus, TaskPriority, ResourceType } from '@prisma/client';
-import { faker } from '@faker-js/faker';
+import {
+  PrismaClient,
+  Role,
+  ProjectStatus,
+  TaskStatus,
+  TaskPriority,
+  ResourceType,
+} from "@prisma/client";
+import { faker } from "@faker-js/faker";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding database...');
+  console.log("Seeding database...");
 
-  // --- USERS ---
   const admin = await prisma.user.create({
     data: {
-      name: 'Alice Admin',
-      email: 'admin@example.com',
-      password: 'hashedpassword123', // Replace with hashed value
+      name: "Alice Admin",
+      email: "admin@example.com",
+      password: "hashedpassword123", // Replace with hashed value
       role: Role.ADMIN,
     },
   });
 
   const manager = await prisma.user.create({
     data: {
-      name: 'Mark Manager',
-      email: 'manager@example.com',
-      password: 'hashedpassword123',
+      name: "Mark Manager",
+      email: "manager@example.com",
+      password: "hashedpassword123",
       role: Role.MANAGER,
     },
   });
 
   const member = await prisma.user.create({
     data: {
-      name: 'Mia Member',
-      email: 'member@example.com',
-      password: 'hashedpassword123',
+      name: "Mia Member",
+      email: "member@example.com",
+      password: "hashedpassword123",
       role: Role.MEMBER,
     },
   });
 
-  // Common NL locations
   const nlCities = [
-    'Amsterdam',
-    'Rotterdam',
-    'The Hague',
-    'Utrecht',
-    'Eindhoven',
-    'Tilburg',
-    'Groningen',
-    'Almere',
-    'Breda',
-    'Nijmegen',
+    "Amsterdam",
+    "Rotterdam",
+    "The Hague",
+    "Utrecht",
+    "Eindhoven",
+    "Tilburg",
+    "Groningen",
+    "Almere",
+    "Breda",
+    "Nijmegen",
   ];
 
-  // --- PROJECTS ---
   const projects = [];
   for (let i = 0; i < 3; i++) {
     const project = await prisma.project.create({
       data: {
-        title: faker.company.name() + ' Project',
+        title: faker.company.name() + " Project",
         description: faker.lorem.sentences(2),
         startDate: faker.date.past({ years: 0.5 }),
         endDate: faker.date.future({ years: 0.5 }),
@@ -63,25 +67,20 @@ async function main() {
           ProjectStatus.COMPLETED,
         ]),
         locationName: faker.helpers.arrayElement(nlCities),
-        mapData: null,
+        mapData: {},
         members: {
-          connect: [
-            { id: admin.id },
-            { id: manager.id },
-            { id: member.id },
-          ],
+          connect: [{ id: admin.id }, { id: manager.id }, { id: member.id }],
         },
       },
     });
     projects.push(project);
   }
 
-  // --- TASKS ---
   for (const project of projects) {
     for (let j = 0; j < 5; j++) {
       await prisma.task.create({
         data: {
-          title: faker.hacker.verb() + ' ' + faker.hacker.noun(),
+          title: faker.hacker.verb() + " " + faker.hacker.noun(),
           description: faker.lorem.sentence(),
           status: faker.helpers.arrayElement([
             TaskStatus.TODO,
@@ -105,7 +104,6 @@ async function main() {
     }
   }
 
-  // --- RESOURCE LOGS ---
   for (const project of projects) {
     for (let k = 0; k < 3; k++) {
       await prisma.resourceLog.create({
@@ -114,14 +112,14 @@ async function main() {
             ResourceType.HOURS,
             ResourceType.BUDGET,
           ]),
-          amount: faker.number.float({ min: 10, max: 200, precision: 0.01 }),
+          amount: faker.number.float({ min: 10, max: 200 }),
           projectId: project.id,
         },
       });
     }
   }
 
-  console.log('✅ Database seeding completed!');
+  console.log("✅ Database seeding completed!");
 }
 
 main()
