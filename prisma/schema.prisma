@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["queryCompiler", "driverAdapters"]
+  previewFeatures = ["driverAdapters", "queryCompiler"]
 }
 
 datasource db {
@@ -12,55 +12,52 @@ model User {
   id        String    @id @default(cuid())
   name      String
   email     String    @unique
-  password  String    // hashed password
+  password  String
   role      Role      @default(MEMBER)
-  projects  Project[] @relation("ProjectMembers")
-  tasks     Task[]    @relation("UserTasks")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  tasks     Task[]    @relation("UserTasks")
+  projects  Project[] @relation("ProjectMembers")
 }
 
 model Project {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  startDate   DateTime
-  endDate     DateTime
-  status      ProjectStatus @default(NOT_STARTED)
-
-  // GeoData
+  id           String        @id @default(cuid())
+  title        String
+  description  String?
+  startDate    DateTime
+  endDate      DateTime
+  status       ProjectStatus @default(NOT_STARTED)
   locationName String?
-  mapData      Json?   // for polygons, multi-geometry, etc.
-
-  members     User[]    @relation("ProjectMembers")
-  tasks       Task[]
-  resources   ResourceLog[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  mapData      Json?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  resources    ResourceLog[]
+  tasks        Task[]
+  members      User[]        @relation("ProjectMembers")
 }
 
 model Task {
-  id          String    @id @default(cuid())
-  title       String
-  description String?
-  status      TaskStatus @default(TODO)
-  priority    TaskPriority @default(MEDIUM)
-  dueDate     DateTime?
-  project     Project   @relation(fields: [projectId], references: [id])
-  projectId   String
-  assignedTo  User?     @relation("UserTasks", fields: [assignedToId], references: [id])
+  id           String       @id @default(cuid())
+  title        String
+  description  String?
+  status       TaskStatus   @default(TODO)
+  priority     TaskPriority @default(MEDIUM)
+  dueDate      DateTime?
+  projectId    String
   assignedToId String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  assignedTo   User?        @relation("UserTasks", fields: [assignedToId], references: [id])
+  project      Project      @relation(fields: [projectId], references: [id])
 }
 
 model ResourceLog {
-  id          String    @id @default(cuid())
-  type        ResourceType
-  amount      Float
-  date        DateTime  @default(now())
-  project     Project   @relation(fields: [projectId], references: [id])
-  projectId   String
+  id        String       @id @default(cuid())
+  type      ResourceType
+  amount    Float
+  date      DateTime     @default(now())
+  projectId String
+  project   Project      @relation(fields: [projectId], references: [id])
 }
 
 enum Role {
