@@ -39,7 +39,11 @@ export default function SignInPage() {
         <Typography variant="h5" component="h1" gutterBottom>
           Sign In
         </Typography>
-        <Box component="form" onSubmit={handleLogin} sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box
+          component="form"
+          onSubmit={handleLogin}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+        >
           <TextField
             label="Email"
             type="email"
