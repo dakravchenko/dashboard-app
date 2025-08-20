@@ -2,7 +2,7 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/lib/prisma";
-import { compare, hash } from "bcrypt";
+import { compare } from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -20,9 +20,6 @@ export const authOptions: NextAuthOptions = {
           where: { email: credentials.email },
         });
         if (!user || !user.password) return null;
-
-        const hashed = await hash("123", 10);
-        console.log(hashed);
 
         const isValid = await compare(credentials.password, user.password);
         if (!isValid) return null;
@@ -47,7 +44,5 @@ export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
 };
 
-const handler = NextAuth(authOptions);
-
-// ⚡ Export GET and POST handlers
-export { handler as GET, handler as POST };
+// Export the NextAuth handler as the default export
+export default NextAuth(authOptions);
