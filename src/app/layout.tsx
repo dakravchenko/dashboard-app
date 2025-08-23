@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import ThemeWrapper from "@/components/ThemeWrapper";
 
 import { Inter } from "next/font/google";
+import ClientLayout from "./ClientLayout";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   keywords: ["Dashboard"],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable}`}>
-        <ThemeWrapper>{children}</ThemeWrapper>
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
