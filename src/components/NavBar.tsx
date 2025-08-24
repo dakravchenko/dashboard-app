@@ -76,7 +76,7 @@ const Navbar = () => {
               Logo
             </Typography>
             <Avatar sx={{ bgcolor: "primary.main", marginBottom: 2 }}>
-              {currentUser.name.charAt(0).toUpperCase()}
+              {currentUser?.name?.charAt(0).toUpperCase()}
             </Avatar>
             <List>
               {links.map((link) => (
