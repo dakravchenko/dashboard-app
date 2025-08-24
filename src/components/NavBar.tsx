@@ -17,17 +17,6 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
-import { Role } from "@prisma/client";
-
-type User = {
-  name: string;
-  id: string;
-  email: string;
-  password: string;
-  role: Role;
-  createdAt: Date;
-  updatedAt: Date;
-};
 
 const Navbar = () => {
   const theme = useTheme();
@@ -37,7 +26,7 @@ const Navbar = () => {
 
   if (!session) return null;
 
-  const currentUser = session.user as User;
+  const currentUser = session.user;
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
