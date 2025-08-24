@@ -100,7 +100,7 @@ const Navbar = () => {
               variant="contained"
               color="secondary"
               fullWidth
-              onClick={() => signOut()}
+              onClick={() => signOut({ redirect: true, callbackUrl: "/" })}
             >
               Log Out
             </Button>

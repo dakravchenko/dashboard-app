@@ -12,7 +12,7 @@ export default async function HomePage() {
 
   return (
     <Container sx={{ mt: 10 }}>
-      <Typography variant="h4">Welcome {session.user?.email}</Typography>
+      <Typography variant="h4">Welcome {session?.user?.email}</Typography>
     </Container>
   );
 }
