@@ -1,5 +1,4 @@
 import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import { Typography, Container } from "@mui/material";
 import { authOptions } from "@/lib/authOptions";
 

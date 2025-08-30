@@ -65,7 +65,7 @@ export default function SignInPage() {
           </Button>
         </Box>
         <Typography variant="body2" align="center">
-          Don't have an account? <a href="/signup">Sign Up</a>
+          Dont have an account? <a href="/signup">Sign Up</a>
         </Typography>
       </Paper>
     </Container>
