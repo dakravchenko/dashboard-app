@@ -11,6 +11,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
+import Link from "next/link";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -27,7 +28,7 @@ export default function SignInPage() {
     });
 
     if (res?.ok) {
-      router.push("/");
+      router.push("/dashboards");
     } else {
       alert("Invalid credentials");
     }
@@ -65,7 +66,7 @@ export default function SignInPage() {
           </Button>
         </Box>
         <Typography variant="body2" align="center">
-          Dont have an account? <a href="/signup">Sign Up</a>
+          Dont have an account? <Link href="/signup">Sign Up</Link>
         </Typography>
       </Paper>
     </Container>

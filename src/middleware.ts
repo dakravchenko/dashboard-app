@@ -6,6 +6,12 @@ const publicPaths = ["/signin", "/favicon.ico", "/signup"];
 
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  if (pathname === "/") {
+    const dashboardsUrl = new URL("/dashboards", req.url);
+    return NextResponse.redirect(dashboardsUrl);
+  }
+  
   if (publicPaths.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }

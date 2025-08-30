@@ -15,28 +15,25 @@ import {
   useTheme,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useState } from "react";
+import Link from "next/link";
+
+
+const links = [
+  { name: "Users", href: "/users" },
+  { name: "Dashboards", href: "/dashboards" },
+  { name: "Tasks", href: "/tasks" },
+];
 
 const Navbar = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { data: session } = useSession();
-
-  if (!session) return null;
-
-  const currentUser = session.user;
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
   };
-
-  const links = [
-    { name: "Users", href: "/users" },
-    { name: "Dashboards", href: "/dashboards" },
-    { name: "Tasks", href: "/tasks" },
-  ];
 
   return (
     <>
@@ -56,8 +53,10 @@ const Navbar = () => {
             >
               <List>
                 {links.map((link) => (
-                  <ListItem component="a" href={link.href} key={link.name}>
-                    <ListItemText primary={link.name} />
+                  <ListItem key={link.name}>
+                    <Link href={link.href} passHref>
+                      <ListItemText primary={link.name} />
+                    </Link>
                   </ListItem>
                 ))}
                 <ListItem>
@@ -76,12 +75,14 @@ const Navbar = () => {
               Logo
             </Typography>
             <Avatar sx={{ bgcolor: "primary.main", marginBottom: 2 }}>
-              {currentUser?.name?.charAt(0).toUpperCase()}
+              {/* {currentUser?.name?.charAt(0).toUpperCase()} */}
             </Avatar>
             <List>
               {links.map((link) => (
-                <ListItem component="a" href={link.href} key={link.name}>
-                  <ListItemText primary={link.name} />
+                <ListItem key={link.name}>
+                  <Link href={link.href} passHref>
+                    <ListItemText primary={link.name} />
+                  </Link>
                 </ListItem>
               ))}
             </List>
