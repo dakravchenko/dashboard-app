@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import {
   Container,
   Box,
@@ -12,38 +11,56 @@ import {
   Paper,
 } from "@mui/material";
 
-export default function SignInPage() {
+export default function SignUpPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
 
-    if (res?.ok) {
-      router.push("/");
-    } else {
-      alert("Invalid credentials");
+      console.log(res);
+
+      if (res.ok) {
+        alert("Account created successfully!");
+        router.push("/signin");
+      } else {
+        const error = await res.json();
+        alert(error.message || "Failed to create account");
+      }
+    } catch (error) {
+      console.error("Sign-up error:", error);
+      alert("An unexpected error occurred. Please try again.");
     }
-  }
+  };
 
   return (
     <Container maxWidth="sm">
       <Paper elevation={3} sx={{ p: 4, mt: 10 }}>
         <Typography variant="h5" component="h1" gutterBottom>
-          Sign In
+          Sign Up
         </Typography>
         <Box
           component="form"
-          onSubmit={handleLogin}
+          onSubmit={handleSignUp}
           sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         >
+          <TextField
+            label="Name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            required
+          />
           <TextField
             label="Email"
             type="email"
@@ -61,12 +78,9 @@ export default function SignInPage() {
             required
           />
           <Button type="submit" variant="contained" color="primary">
-            Sign In
+            Sign Up
           </Button>
         </Box>
-        <Typography variant="body2" align="center">
-          Don't have an account? <a href="/signup">Sign Up</a>
-        </Typography>
       </Paper>
     </Container>
   );
