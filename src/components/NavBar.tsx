@@ -1,7 +1,6 @@
 "use client";
 import {
   AppBar,
-  Avatar,
   Box,
   Button,
   Drawer,
@@ -18,7 +17,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
-
+import NavAvatar from "./NavAvatar";
+import { User } from "@/types/user";
 
 const links = [
   { name: "Users", href: "/users" },
@@ -26,7 +26,11 @@ const links = [
   { name: "Tasks", href: "/tasks" },
 ];
 
-const Navbar = () => {
+type Props = {
+  user: User | null;
+};
+
+const Navbar = ({ user }: Props) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -74,9 +78,7 @@ const Navbar = () => {
             <Typography variant="h6" sx={{ marginBottom: 2 }}>
               Logo
             </Typography>
-            <Avatar sx={{ bgcolor: "primary.main", marginBottom: 2 }}>
-              {/* {currentUser?.name?.charAt(0).toUpperCase()} */}
-            </Avatar>
+            <NavAvatar user={user} />
             <List>
               {links.map((link) => (
                 <ListItem key={link.name}>
