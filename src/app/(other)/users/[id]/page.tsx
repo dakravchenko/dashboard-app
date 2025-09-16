@@ -3,11 +3,12 @@ import prisma from "@/lib/prisma";
 import { Box } from "@mui/material";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function UserUpdatePage({ params }: Props) {
-  const user = await prisma.user.findUnique({ where: { id: params.id } });
+  const { id } = await params;
+  const user = await prisma.user.findUnique({ where: { id } });
 
   if (!user) {
     return <Box>User not found</Box>;
