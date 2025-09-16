@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import "./globals.css";
 
 import { Inter } from "next/font/google";
 import ClientLayout from "./ClientLayout";
 import ThemeWrapper from "@/components/ThemeWrapper";
-import Navbar from "@/components/NavBar";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,7 +28,9 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${inter.variable}`}>
         <ThemeWrapper>
-          <ClientLayout>{children}</ClientLayout>
+          <ClientLayout>
+            <div className="app-root">{children}</div>
+          </ClientLayout>
         </ThemeWrapper>
       </body>
     </html>

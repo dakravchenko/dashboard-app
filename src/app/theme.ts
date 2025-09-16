@@ -64,5 +64,6 @@ export const getTheme = (mode: Mode) => {
     typography: {
       fontFamily: "Inter, sans-serif",
     },
+    
   });
 };

@@ -11,7 +11,7 @@ export default async function middleware(req: NextRequest) {
     const dashboardsUrl = new URL("/dashboards", req.url);
     return NextResponse.redirect(dashboardsUrl);
   }
-  
+
   if (publicPaths.some((path) => pathname.startsWith(path))) {
     return NextResponse.next();
   }
@@ -23,10 +23,11 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(signInUrl);
   }
 
-  if (pathname.startsWith("/users") && token.role !== "admin") {
-    const unauthorized = new URL("/unauthorized", req.url);
-    return NextResponse.redirect(unauthorized);
-  }
+  // if (pathname.startsWith("/users") && token.role !== "admin") {
+  //   console.log(token);
+  //   const unauthorized = new URL("/unauthorized", req.url);
+  //   return NextResponse.redirect(unauthorized);
+  // }
 
   return NextResponse.next();
 }
