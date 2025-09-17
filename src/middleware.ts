@@ -23,11 +23,11 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(signInUrl);
   }
 
-  // if (pathname.startsWith("/users") && token.role !== "admin") {
-  //   console.log(token);
-  //   const unauthorized = new URL("/unauthorized", req.url);
-  //   return NextResponse.redirect(unauthorized);
-  // }
+  if (pathname.startsWith("/users") && token.role !== "ADMIN") {
+    console.log(token);
+    const unauthorized = new URL("/unauthorized", req.url);
+    return NextResponse.redirect(unauthorized);
+  }
 
   return NextResponse.next();
 }
