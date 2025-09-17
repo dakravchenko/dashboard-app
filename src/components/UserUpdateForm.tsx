@@ -25,6 +25,7 @@ export default function UserUpdateForm({ user }: Props) {
   const [email, setEmail] = useState(user.email);
   const [role, setRole] = useState(user.role);
   const router = useRouter();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   return (
     <Dialog open={true} onClose={router.back} fullWidth maxWidth="sm">
@@ -36,20 +37,33 @@ export default function UserUpdateForm({ user }: Props) {
           onChange={(e) => setName(e.target.value)}
           fullWidth
           margin="normal"
+          error={!!errors.name}
+          helperText={errors.name}
         />
+
         <TextField
           label="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           fullWidth
           margin="normal"
+          error={!!errors.email}
+          helperText={errors.email}
         />
+
         <Autocomplete
           sx={{ marginTop: 2 }}
           options={roles}
           value={role}
           onChange={(e, newValue) => setRole(newValue as Role)}
-          renderInput={(params) => <TextField {...params} label="Role" />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Role"
+              error={!!errors.role}
+              helperText={errors.role}
+            />
+          )}
           fullWidth
         />
       </DialogContent>
@@ -58,11 +72,14 @@ export default function UserUpdateForm({ user }: Props) {
           Cancel
         </Button>
         <Button
-          onClick={() =>
-            updateUser(user.id, name, email, role).then(() => router.back())
-          }
-          type="submit"
-          form="user-update-form"
+          onClick={async () => {
+            const result = await updateUser(user.id, name, email, role);
+            if (!result.success) {
+              setErrors(result.errors ?? {});
+            } else {
+              router.back();
+            }
+          }}
           variant="contained"
           color="primary"
         >
