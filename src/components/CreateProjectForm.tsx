@@ -1,5 +1,5 @@
 "use client";
-
+import { Dayjs } from "dayjs";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -31,7 +31,7 @@ export default function CreateProjectForm({ users, tasks }: Props) {
 
   const handleDateChange = (
     name: "startDate" | "endDate",
-    value: Date | null
+    value: Dayjs | null
   ) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
