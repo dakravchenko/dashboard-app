@@ -36,13 +36,13 @@ export default function CreateProjectForm({ users, tasks }: Props) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleUserChange = (event: any, value: User[]) => {
+  const handleUserChange = (event: React.SyntheticEvent, value: User[]) => {
     setFormData((prev) => ({ ...prev, assignedUsers: value }));
-  };
+};
 
-  const handleTaskChange = (event: any, value: Task[]) => {
+const handleTaskChange = (event: React.SyntheticEvent, value: Task[]) => {
     setFormData((prev) => ({ ...prev, tasks: value }));
-  };
+};
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
