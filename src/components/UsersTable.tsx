@@ -10,11 +10,12 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   users: User[];
+  canUpdateUsers: boolean;
 };
 
-export default function UsersTable({ users }: Props) {
+export default function UsersTable({ users, canUpdateUsers }: Props) {
   const router = useRouter();
-  
+
   const columns: GridColDef[] = [
     { field: "name", headerName: "Name", flex: 1 },
     { field: "email", headerName: "Email", flex: 1 },
@@ -38,22 +39,23 @@ export default function UsersTable({ users }: Props) {
       headerName: "Actions",
       flex: 1,
       sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            aria-label="edit"
-            onClick={() => router.push(`/users/${params.row.id}`)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            onClick={async () => await deleteUser(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
+      renderCell: (params) =>
+        canUpdateUsers && (
+          <>
+            <IconButton
+              aria-label="edit"
+              onClick={() => router.push(`/users/${params.row.id}`)}
+            >
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              aria-label="delete"
+              onClick={async () => await deleteUser(params.row.id)}
+            >
+              <DeleteIcon />
+            </IconButton>
+          </>
+        ),
     },
   ];
 
