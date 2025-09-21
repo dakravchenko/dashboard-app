@@ -6,8 +6,9 @@ import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import { useState } from "react";
-import { Task, User } from "@prisma/client";
+import { ProjectStatus, ResourceType, Task, User } from "@prisma/client";
 import { dateFormats } from "@/app/localization";
+import { Button } from "@mui/material";
 
 type Props = {
   users: User[];
@@ -20,8 +21,12 @@ export default function CreateProjectForm({ users, tasks }: Props) {
     description: "",
     startDate: null,
     endDate: null,
-    assignedUsers: [] as User[],
+    members: [] as User[],
     tasks: [] as Task[],
+    status: "NOT_STARTED" as ProjectStatus,
+    locationName: "",
+    resourcesType: null as ResourceType | null,
+    amount: 0,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,11 +43,11 @@ export default function CreateProjectForm({ users, tasks }: Props) {
 
   const handleUserChange = (event: React.SyntheticEvent, value: User[]) => {
     setFormData((prev) => ({ ...prev, assignedUsers: value }));
-};
+  };
 
-const handleTaskChange = (event: React.SyntheticEvent, value: Task[]) => {
+  const handleTaskChange = (event: React.SyntheticEvent, value: Task[]) => {
     setFormData((prev) => ({ ...prev, tasks: value }));
-};
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -109,7 +114,7 @@ const handleTaskChange = (event: React.SyntheticEvent, value: Task[]) => {
             multiple
             options={users}
             getOptionLabel={(option) => option.name}
-            value={formData.assignedUsers}
+            value={formData.members}
             onChange={handleUserChange}
             renderInput={(params) => (
               <TextField
@@ -137,6 +142,60 @@ const handleTaskChange = (event: React.SyntheticEvent, value: Task[]) => {
               />
             )}
           />
+        </Grid>
+        <Grid size={{ xs: 4 }}>
+          <TextField
+            label="Location Name"
+            name="locationName"
+            value={formData.locationName}
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid size={{ xs: 4 }}>
+          <Autocomplete
+            options={Object.values(ResourceType)}
+            getOptionLabel={(option) => option}
+            value={formData.resourcesType}
+            onChange={(event, value) =>
+              setFormData((prev) => ({ ...prev, resourcesType: value }))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Resources"
+                placeholder="Select resources"
+                fullWidth
+              />
+            )}
+          />
+        </Grid>
+        <Grid size={{ xs: 4 }}>
+          <TextField
+            label="Amount"
+            name="amount"
+            type="number"
+            value={formData.amount}
+            onChange={handleChange}
+            fullWidth
+          />
+        </Grid>
+        <Grid
+          container
+          justifyContent="flex-end"
+          spacing={2}
+          style={{ marginTop: 16 }}
+        >
+          <Grid>
+            <Button variant="outlined" color="secondary" onClick={handleCancel}>
+              Cancel
+            </Button>
+          </Grid>
+          <Grid>
+            <Button variant="contained" color="primary" onClick={handleCreate}>
+              Create
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     </LocalizationProvider>
