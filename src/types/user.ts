@@ -1,12 +1,13 @@
-import { Role } from "@prisma/client";
+import { Project, ResourceType, Task } from "@prisma/client";
 
-export type User = {
-    name: string;
-    id: string;
-    email: string;
-    password: string;
-    role: Role;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  
+export type ReducedUser = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export type FullProject = Project & {
+  members: ReducedUser[];
+  tasks: Task[];
+  resources: { type: ResourceType; amount: number }[];
+};
