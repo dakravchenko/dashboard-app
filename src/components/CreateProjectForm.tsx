@@ -279,7 +279,7 @@ export default function CreateProjectForm({ users, tasks, project }: Props) {
               color="primary"
               onClick={() => submitData(formData)}
             >
-              Create
+              {project ? "Update" : "Create"}
             </Button>
           </Grid>
         </Grid>

@@ -1,6 +1,6 @@
 import Navbar from "@/components/NavBar";
 import { authOptions } from "@/lib/authOptions";
-import { User } from "@/types/user";
+import { ReducedUser } from "@/types/user";
 import { getServerSession } from "next-auth";
 
 export default async function OtherLayout({
@@ -12,7 +12,7 @@ export default async function OtherLayout({
 
   return (
     <>
-      <Navbar user={session?.user as User}/>
+      <Navbar user={session?.user as ReducedUser}/>
       {children}
     </>
   );
