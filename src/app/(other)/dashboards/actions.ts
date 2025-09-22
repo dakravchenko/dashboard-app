@@ -6,8 +6,6 @@ import { ProjectStatus, ResourceType } from "@prisma/client";
 import { z } from "zod";
 import { ReducedUser } from "@/types/user";
 
-const dateRegex = /^\d{2}-\d{2}-\d{4}$/;
-
 const createProjectSchema = z
   .object({
     title: z.string().min(1, { message: "Title is required" }),

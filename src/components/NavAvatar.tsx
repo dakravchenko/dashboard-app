@@ -1,8 +1,8 @@
-import { User } from "@/types/user";
+import { ReducedUser } from "@/types/user";
 import { Avatar } from "@mui/material";
 
 type Props = {
-  user: User | null;
+  user: ReducedUser | null;
 };
 
 const NavAvatar = ({ user }: Props) => {

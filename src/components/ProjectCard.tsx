@@ -1,5 +1,5 @@
-import { Box, IconButton } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import { Box } from "@mui/material";
+
 import { Project } from "@prisma/client";
 import Link from "next/link";
 import { EditProjectButton } from "./EditProjectButton";
