@@ -1,5 +1,5 @@
 "use client";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -10,7 +10,7 @@ import { ProjectStatus, ResourceType, Task } from "@prisma/client";
 import { dateFormats } from "@/app/localization";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { createProject } from "@/app/(other)/dashboards/actions";
+import { createProject, updateProject } from "@/app/(other)/dashboards/actions";
 import { FullProject, ReducedUser } from "@/types/user";
 
 import dynamic from "next/dynamic";
@@ -45,20 +45,20 @@ export default function CreateProjectForm({ users, tasks, project }: Props) {
   const router = useRouter();
 
   useEffect(() => {
-    if (project) {
-      setFormData({
-        title: project.title || "",
-        description: project.description || "",
-        startDate: project.startDate?.format("DD-MM-YYYY"),
-        endDate: project.endDate?.format("DD-MM-YYYY"),
-        members: project.members || [],
-        tasks: project.tasks || [],
-        status: project.status || "NOT_STARTED",
-        locationName: project.locationName || "",
-        resourcesType: project.resources?.[0]?.type || null,
-        amount: project.resources?.[0]?.amount || 0,
-      });
-    }
+    if (!project) return;
+
+    setFormData({
+      title: project.title || "",
+      description: project.description || "",
+      startDate: project.startDate ? dayjs(project.startDate) : null,
+      endDate: project.endDate ? dayjs(project.endDate) : null,
+      members: project.members || [],
+      tasks: project.tasks || [],
+      status: project.status || "NOT_STARTED",
+      locationName: project.locationName || "",
+      resourcesType: project.resources?.[0]?.type || null,
+      amount: project.resources?.[0]?.amount || 0,
+    });
   }, [project]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,25 +88,23 @@ export default function CreateProjectForm({ users, tasks, project }: Props) {
   };
 
   const submitData = async (data: typeof formData) => {
-    const formattedData = {
-      ...data,
-      startDate: data.startDate?.format("DD-MM-YYYY"),
-      endDate: data.endDate?.format("DD-MM-YYYY"),
+    const projectData = {
+      title: data.title,
+      description: data.description,
+      startDate: data.startDate ? data.startDate.toDate() : null,
+      endDate: data.endDate ? data.endDate.toDate() : null,
+      status: data.status,
+      locationName: data.locationName,
+      members: data.members,
+      tasks: data.tasks.map((task) => ({ id: task.id })),
+      resources: data.resourcesType
+        ? [{ type: data.resourcesType, amount: data.amount }]
+        : [],
     };
 
-    const response = await createProject({
-      title: formattedData.title,
-      description: formattedData.description,
-      startDate: formattedData.startDate!,
-      endDate: formattedData.endDate!,
-      status: formattedData.status,
-      locationName: formattedData.locationName,
-      members: formattedData.members,
-      tasks: formattedData.tasks.map((task) => ({ id: task.id })),
-      resources: formattedData.resourcesType
-        ? [{ type: formattedData.resourcesType, amount: formattedData.amount }]
-        : [],
-    });
+    const response = project
+      ? await updateProject(project.id, projectData)
+      : await createProject(projectData);
 
     if (!response.success) {
       setErrors(response.errors || {});
