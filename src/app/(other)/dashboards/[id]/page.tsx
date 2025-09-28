@@ -1,3 +1,9 @@
+import TaskBoard from "@/components/TasksBoard";
+
 export default function ProjectPage() {
-  return <div>Project Details Page</div>;
+  return (
+    <>
+      <TaskBoard initialTasks={[]} />
+    </>
+  );
 }
