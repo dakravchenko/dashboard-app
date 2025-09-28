@@ -1,12 +1,13 @@
 import UsersTable from "@/components/UsersTable";
 import { authOptions } from "@/lib/authOptions";
-import prisma from "@/lib/prisma";
+import { getUsersForTable } from "@/lib/getUsers";
 import { getServerSession } from "next-auth";
 
 export default async function UsersPage() {
-  const session = await getServerSession(authOptions);
-
-  const users = await prisma.user.findMany();
+  const [users, session] = await Promise.all([
+    getUsersForTable(),
+    getServerSession(authOptions),
+  ]);
 
   return (
     <UsersTable users={users} canUpdateUsers={session?.user.role === "ADMIN"} />

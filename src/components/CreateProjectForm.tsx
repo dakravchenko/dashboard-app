@@ -10,7 +10,7 @@ import { ProjectStatus, ResourceType, Task } from "@prisma/client";
 import { dateFormats } from "@/app/localization";
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { createProject, updateProject } from "@/app/(other)/dashboards/actions";
+import { createProject, updateProject } from "@/lib/actions/projectActions";
 import { FullProject, ReducedUser } from "@/types/user";
 
 import dynamic from "next/dynamic";

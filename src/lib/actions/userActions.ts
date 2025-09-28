@@ -7,7 +7,7 @@ import { z, ZodError } from "zod";
 const updateUserSchema = z.object({
   userId: z.string(), //z.uuid()
   name: z
-  
+
     .string()
     .min(1, { message: "Name is required" })
     .max(50, { message: "Name is too long" }),

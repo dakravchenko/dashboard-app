@@ -5,11 +5,11 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { IconButton, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { deleteUser } from "@/app/(other)/users/actions";
+import { deleteUser } from "@/lib/actions/userActions";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  users: User[];
+  users: Omit<User, "password">[];
   canUpdateUsers: boolean;
 };
 

@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { Role, User } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { updateUser } from "@/app/(other)/users/actions";
+import { updateUser } from "@/lib/actions/userActions";
 
 type Props = {
   user: User;

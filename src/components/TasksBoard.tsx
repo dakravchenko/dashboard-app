@@ -7,19 +7,28 @@ import {
   DropResult,
 } from "@hello-pangea/dnd";
 import { Card, CardContent, Button, Typography, Box } from "@mui/material";
-import { Task } from "@prisma/client";
 import { useState } from "react";
 import TaskDialog from "./TasksDialog";
+import { OptionalTask } from "@/types/task";
+import { ReducedUser } from "@/types/user";
+import { createTask, updateLevelAndStatus } from "@/lib/actions/taskActions";
+import { TaskStatus } from "@prisma/client";
 
-const columns: { id: Task["status"]; label: string }[] = [
+const columns: { id: TaskStatus; label: string }[] = [
   { id: "TODO", label: "To Do" },
   { id: "IN_PROGRESS", label: "In Progress" },
   { id: "DONE", label: "Done" },
 ];
 
-export default function TaskBoard({ initialTasks }: { initialTasks: Task[] }) {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [dialogOpen, setDialogOpen] = useState(false)
+type Props = {
+  initialTasks: OptionalTask[];
+  users: ReducedUser[];
+  projectId: string;
+};
+
+export default function TaskBoard({ initialTasks, users, projectId }: Props) {
+  const [tasks, setTasks] = useState<OptionalTask[]>(initialTasks);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source } = result;
@@ -31,44 +40,64 @@ export default function TaskBoard({ initialTasks }: { initialTasks: Task[] }) {
     )
       return;
 
-    const updated = Array.from(tasks);
-    const [moved] = updated.splice(source.index, 1);
-    moved.status = destination.droppableId as Task["status"];
-    moved.level = destination.index;
+    let updatedTasks = [...tasks];
 
-    updated.splice(destination.index, 0, moved);
+    if (source.droppableId === destination.droppableId) {
+      const colTasks = updatedTasks
+        .filter((t) => t.status === source.droppableId)
+        .sort((a, b) => a.level - b.level);
 
-    // renumber levels in target column
-    const reordered = updated.map((t, i) =>
-      t.status === moved.status ? { ...t, level: i } : t
-    );
+      const [moved] = colTasks.splice(source.index, 1);
+      colTasks.splice(destination.index, 0, moved);
 
-    setTasks(reordered);
+      colTasks.forEach((t, i) => (t.level = i));
 
-    // persist to backend
-    await fetch(`/api/tasks/${moved.id}`, {
-      method: "PATCH",
-      body: JSON.stringify({ status: moved.status, level: moved.level }),
-      headers: { "Content-Type": "application/json" },
-    });
-  };
+      updatedTasks = updatedTasks.map((t) => {
+        const updated = colTasks.find((c) => c.id === t.id);
+        return updated || t;
+      });
 
-  const handleCreateTask = async (status: Task["status"]) => {
-    const newTask = {
-      id: Math.random().toString(36).substring(2), // temp id for UI
-      title: "New Task",
-      status,
-      level: tasks.filter((t) => t.status === status).length,
-    };
+      setTasks(updatedTasks);
+      console.log("Reordered in same column:", moved.title, moved.id);
 
-    setTasks((prev) => [...prev, newTask]);
+      await updateLevelAndStatus(
+        moved.id!,
+        moved.status,
+        moved.level,
+        projectId
+      );
+    } else {
+      const sourceTasks = updatedTasks
+        .filter((t) => t.status === source.droppableId)
+        .sort((a, b) => a.level - b.level);
 
-    // Persist to backend
-    await fetch(`/api/tasks`, {
-      method: "POST",
-      body: JSON.stringify(newTask),
-      headers: { "Content-Type": "application/json" },
-    });
+      const destTasks = updatedTasks
+        .filter((t) => t.status === destination.droppableId)
+        .sort((a, b) => a.level - b.level);
+
+      const [moved] = sourceTasks.splice(source.index, 1);
+      moved.status = destination.droppableId as TaskStatus;
+      destTasks.splice(destination.index, 0, moved);
+
+      sourceTasks.forEach((t, i) => (t.level = i));
+      destTasks.forEach((t, i) => (t.level = i));
+
+      updatedTasks = updatedTasks.map((t) => {
+        const updated =
+          sourceTasks.find((s) => s.id === t.id) ||
+          destTasks.find((d) => d.id === t.id);
+        return updated || t;
+      });
+
+      setTasks(updatedTasks);
+
+      await updateLevelAndStatus(
+        moved.id!,
+        moved.status,
+        moved.level,
+        projectId
+      );
+    }
   };
 
   return (
@@ -92,7 +121,6 @@ export default function TaskBoard({ initialTasks }: { initialTasks: Task[] }) {
                   {col.label}
                 </Typography>
 
-                {/* Task cards */}
                 <Box flex={1}>
                   {tasks
                     .filter((t) => t.status === col.id)
@@ -100,7 +128,7 @@ export default function TaskBoard({ initialTasks }: { initialTasks: Task[] }) {
                     .map((task, index) => (
                       <Draggable
                         key={task.id}
-                        draggableId={task.id}
+                        draggableId={task.id!}
                         index={index}
                       >
                         {(provided) => (
@@ -134,10 +162,9 @@ export default function TaskBoard({ initialTasks }: { initialTasks: Task[] }) {
       <TaskDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onSave={(newTask) => {
-          // handle creating task here
-          console.log("Task to save:", newTask);
-        }}
+        onSave={createTask}
+        users={users}
+        projectId={projectId}
       />
     </DragDropContext>
   );
