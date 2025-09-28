@@ -18,7 +18,7 @@ import { signOut } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
 import NavAvatar from "./NavAvatar";
-import { User } from "@/types/user";
+import { ReducedUser } from "@/types/user";
 
 const links = [
   { name: "Users", href: "/users" },
@@ -27,7 +27,7 @@ const links = [
 ];
 
 type Props = {
-  user: User | null;
+  user: ReducedUser | null;
 };
 
 const Navbar = ({ user }: Props) => {
