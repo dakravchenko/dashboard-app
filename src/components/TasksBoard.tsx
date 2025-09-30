@@ -13,6 +13,7 @@ import { OptionalTask } from "@/types/task";
 import { ReducedUser } from "@/types/user";
 import { createTask, updateLevelAndStatus } from "@/lib/actions/taskActions";
 import { TaskStatus } from "@prisma/client";
+import NavAvatar from "./NavAvatar";
 
 const columns: { id: TaskStatus; label: string }[] = [
   { id: "TODO", label: "To Do" },
@@ -58,7 +59,6 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
       });
 
       setTasks(updatedTasks);
-      console.log("Reordered in same column:", moved.title, moved.id);
 
       await updateLevelAndStatus(
         moved.id!,
@@ -138,7 +138,91 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                             {...provided.dragHandleProps}
                             sx={{ mb: 1 }}
                           >
-                            <CardContent>{task.title}</CardContent>
+                            <CardContent>
+                              <Typography variant="h6">{task.title}</Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color:
+                                    task.priority === "HIGH"
+                                      ? "red"
+                                      : task.priority === "MEDIUM"
+                                        ? "orange"
+                                        : "green",
+                                }}
+                              >
+                                priority: {task.priority}
+                              </Typography>
+
+                              <Box mt={1} display="flex" alignItems="center">
+                                <Box
+                                  flex={1}
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="flex-start"
+                                >
+                                  {task.dueDate && (
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ mr: 2, fontStyle: "italic" }}
+                                    >
+                                      Due:{" "}
+                                      {new Date(
+                                        task.dueDate
+                                      ).toLocaleDateString()}
+                                    </Typography>
+                                  )}
+                                </Box>
+
+                                <Box
+                                  flex={1}
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="flex-end"
+                                >
+                                  {task.assignedToId && (
+                                    <NavAvatar
+                                      user={
+                                        users.find(
+                                          (u) => u.id === task.assignedToId
+                                        ) || null
+                                      }
+                                    />
+                                  )}
+                                </Box>
+                              </Box>
+                              {task.dueDate && (
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    mt: 1,
+                                    fontStyle: "italic",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  {(() => {
+                                    const today = new Date();
+                                    const dueDate = new Date(task.dueDate);
+                                    const diffInTime =
+                                      dueDate.getTime() - today.getTime();
+                                    const diffInDays = Math.ceil(
+                                      diffInTime / (1000 * 60 * 60 * 24)
+                                    );
+
+                                    if (diffInDays === 0) {
+                                      return "Deadline is today";
+                                    } else if (
+                                      diffInDays > 0 &&
+                                      diffInDays <= 7
+                                    ) {
+                                      return `${diffInDays} day${diffInDays > 1 ? "s" : ""} before due date`;
+                                    } else {
+                                      return null;
+                                    }
+                                  })()}
+                                </Typography>
+                              )}
+                            </CardContent>
                           </Card>
                         )}
                       </Draggable>

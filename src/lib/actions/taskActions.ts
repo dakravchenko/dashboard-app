@@ -122,5 +122,5 @@ export async function updateLevelAndStatus(
     data: { status, level },
   });
 
-//   revalidatePath(`dashboards/${projectId}`);
+  revalidatePath(`dashboards/${projectId}`);
 }

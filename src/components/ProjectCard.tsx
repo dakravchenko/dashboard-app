@@ -16,7 +16,6 @@ export function ProjectCard({ project }: Props) {
         border: "1px solid #ccc",
         padding: "16px",
         borderRadius: "8px",
-        cursor: "pointer",
         textDecoration: "none",
       }}
     >

@@ -35,21 +35,20 @@ type Props = {
 };
 
 const defaultTask = {
-  number: 0, // or a default value
+
   title: "",
   description: "",
   status: "TODO" as TaskStatus,
   priority: "MEDIUM" as TaskPriority,
-  level: 0, // or a default value
+  level: 0, 
   dueDate: null,
-  projectId: "", // or a default value
+  projectId: "",
   assignedToId: "",
 };
 
 export default function TaskDialog({
   open,
   onClose,
-  onSave,
   fetchedValues,
   users,
   projectId,
@@ -61,9 +60,9 @@ export default function TaskDialog({
 
   useEffect(() => {}, [fetchedValues, open, projectId]);
 
-  const handleChange = (field: keyof OptionalTask, value: any) => {
+  const handleChange = <K extends keyof OptionalTask>(field: K, value: OptionalTask[K]) => {
     setValues((prev) => ({ ...prev, [field]: value }));
-  };
+};
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -133,7 +132,7 @@ export default function TaskDialog({
               <DatePicker
                 format={dateFormats.keyboardDate}
                 value={values.dueDate ? dayjs(values.dueDate) : null}
-                onChange={(value) => handleChange("dueDate", value)}
+                onChange={(value) => handleChange("dueDate", value as Date | null)}
                 slotProps={{
                   textField: {
                     variant: "outlined",
