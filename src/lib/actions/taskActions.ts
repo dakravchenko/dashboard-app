@@ -25,6 +25,7 @@ export async function createTask(data: {
   assignedToId: string | null;
   level?: number;
 }) {
+
   const validation = createTaskSchema.safeParse(data);
 
   if (!validation.success) {
@@ -42,7 +43,7 @@ export async function createTask(data: {
     };
   }
 
-  await prisma.task.create({
+  const task = await prisma.task.create({
     data: {
       title: data.title,
       description: data.description || "",
@@ -55,15 +56,15 @@ export async function createTask(data: {
     },
   });
 
-  revalidatePath(`dashboards/${data.projectId}`);
+  revalidatePath(`/dashboards/${data.projectId}`);
 
-  return { success: true };
+  return { success: true, task };
 }
 
 export async function deleteTask(taskId: string, projectId: string) {
   await prisma.task.delete({ where: { id: taskId } });
 
-  revalidatePath(`dashboards/${projectId}`);
+  revalidatePath(`/dashboards/${projectId}`);
 }
 
 export async function updateTask(
@@ -106,7 +107,7 @@ export async function updateTask(
     },
   });
 
-  revalidatePath(`dashboards/${projectId}`);
+  revalidatePath(`/dashboards/${projectId}`);
 
   return { success: true };
 }
@@ -122,5 +123,5 @@ export async function updateLevelAndStatus(
     data: { status, level },
   });
 
-  revalidatePath(`dashboards/${projectId}`);
+  revalidatePath(`/dashboards/${projectId}`);
 }

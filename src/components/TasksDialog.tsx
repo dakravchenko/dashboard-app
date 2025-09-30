@@ -13,13 +13,12 @@ import {
   Select,
   InputLabel,
   FormControl,
-  Box,
   Autocomplete,
   Grid,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TaskPriority, TaskStatus } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ReducedUser } from "@/types/user";
@@ -28,19 +27,18 @@ import { createTask } from "@/lib/actions/taskActions";
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSave: (task: OptionalTask) => void; //Partial<Task>?
   fetchedValues?: OptionalTask;
   users: ReducedUser[];
   projectId: string;
+  setTasks: React.Dispatch<React.SetStateAction<OptionalTask[]>>;
 };
 
 const defaultTask = {
-
   title: "",
   description: "",
   status: "TODO" as TaskStatus,
   priority: "MEDIUM" as TaskPriority,
-  level: 0, 
+  level: 0,
   dueDate: null,
   projectId: "",
   assignedToId: "",
@@ -52,17 +50,21 @@ export default function TaskDialog({
   fetchedValues,
   users,
   projectId,
+  setTasks,
 }: Props) {
   const [values, setValues] = useState<OptionalTask>(
     fetchedValues || defaultTask
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {}, [fetchedValues, open, projectId]);
+  // useEffect(() => {}, [fetchedValues, open, projectId]);
 
-  const handleChange = <K extends keyof OptionalTask>(field: K, value: OptionalTask[K]) => {
+  const handleChange = <K extends keyof OptionalTask>(
+    field: K,
+    value: OptionalTask[K]
+  ) => {
     setValues((prev) => ({ ...prev, [field]: value }));
-};
+  };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -132,7 +134,9 @@ export default function TaskDialog({
               <DatePicker
                 format={dateFormats.keyboardDate}
                 value={values.dueDate ? dayjs(values.dueDate) : null}
-                onChange={(value) => handleChange("dueDate", value as Date | null)}
+                onChange={(value) =>
+                  handleChange("dueDate", value as Date | null)
+                }
                 slotProps={{
                   textField: {
                     variant: "outlined",
@@ -185,6 +189,9 @@ export default function TaskDialog({
               if (!result.success) {
                 setErrors(result.errors ?? {});
               } else {
+                if (result.task) {
+                  setTasks((prev) => [...prev, result.task]);
+                }
                 onClose();
               }
             }}

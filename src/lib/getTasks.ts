@@ -11,3 +11,10 @@ export const getTasksByProjectId = async (projectId: string) => {
   });
   return tasks;
 };
+
+export const getTaskByNumber = async (projectId: string, number: number) => {
+  const task = await prisma.task.findFirst({
+    where: { projectId, number },
+  });
+  return task;
+};

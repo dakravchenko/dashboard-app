@@ -11,9 +11,10 @@ import { useState } from "react";
 import TaskDialog from "./TasksDialog";
 import { OptionalTask } from "@/types/task";
 import { ReducedUser } from "@/types/user";
-import { createTask, updateLevelAndStatus } from "@/lib/actions/taskActions";
+import { updateLevelAndStatus } from "@/lib/actions/taskActions";
 import { TaskStatus } from "@prisma/client";
 import NavAvatar from "./NavAvatar";
+import { useRouter } from "next/navigation";
 
 const columns: { id: TaskStatus; label: string }[] = [
   { id: "TODO", label: "To Do" },
@@ -30,6 +31,7 @@ type Props = {
 export default function TaskBoard({ initialTasks, users, projectId }: Props) {
   const [tasks, setTasks] = useState<OptionalTask[]>(initialTasks);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const router = useRouter();
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source } = result;
@@ -137,6 +139,11 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
                             sx={{ mb: 1 }}
+                            onClick={() => {
+                              router.push(
+                                `/dashboards/${projectId}/${task.number}`
+                              );
+                            }}
                           >
                             <CardContent>
                               <Typography variant="h6">{task.title}</Typography>
@@ -246,9 +253,9 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
       <TaskDialog
         open={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        onSave={createTask}
         users={users}
         projectId={projectId}
+        setTasks={setTasks}
       />
     </DragDropContext>
   );
