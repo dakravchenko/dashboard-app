@@ -1,5 +1,5 @@
 import TaskBoard from "@/components/TasksBoard";
-import { getTasksByProjectId } from "@/lib/getTasks";
+import { getUnarchivedTasksByProjectId } from "@/lib/getTasks";
 import { getUsersByProjectId } from "@/lib/getUsers";
 
 type Props = {
@@ -10,7 +10,7 @@ export default async function ProjectPage({ params }: Props) {
   const { id } = await params;
   const [users, tasks] = await Promise.all([
     getUsersByProjectId(id),
-    getTasksByProjectId(id),
+    getUnarchivedTasksByProjectId(id),
   ]);
 
   return (

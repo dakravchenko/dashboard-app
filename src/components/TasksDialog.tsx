@@ -15,6 +15,8 @@ import {
   FormControl,
   Autocomplete,
   Grid,
+  Box,
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TaskPriority, TaskStatus } from "@prisma/client";
@@ -22,7 +24,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ReducedUser } from "@/types/user";
-import { createTask, updateTask } from "@/lib/actions/taskActions";
+import { archiveTask, createTask, updateTask } from "@/lib/actions/taskActions";
 
 type Props = {
   open: boolean;
@@ -42,6 +44,7 @@ const defaultTask = {
   dueDate: null,
   projectId: "",
   assignedToId: "",
+  archived: false,
 };
 
 export default function TaskDialog({
@@ -57,8 +60,6 @@ export default function TaskDialog({
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // useEffect(() => {}, [fetchedValues, open, projectId]);
-
   const handleChange = <K extends keyof OptionalTask>(
     field: K,
     value: OptionalTask[K]
@@ -71,6 +72,7 @@ export default function TaskDialog({
       <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
         <DialogTitle>{fetchedValues ? "Edit Task" : "Create Task"}</DialogTitle>
         <DialogContent>
+          {values.archived && <Typography color="info">Archived</Typography>}
           <TextField
             fullWidth
             margin="normal"
@@ -177,6 +179,24 @@ export default function TaskDialog({
         </DialogContent>
 
         <DialogActions>
+          {values.id && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                flexGrow: 1,
+              }}
+            >
+              <Button
+                onClick={() => {
+                  archiveTask(values.id!, values.projectId, values.archived);
+                  onClose();
+                }}
+              >
+                {values.archived ? "Unarchive" : "Archive"}
+              </Button>
+            </Box>
+          )}
           <Button onClick={onClose}>Cancel</Button>
           <Button
             onClick={async () => {

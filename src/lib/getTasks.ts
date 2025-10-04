@@ -5,9 +5,9 @@ export const getUnassignedTasks = async () => {
   return tasks;
 };
 
-export const getTasksByProjectId = async (projectId: string) => {
+export const getUnarchivedTasksByProjectId = async (projectId: string) => {
   const tasks = await prisma.task.findMany({
-    where: { projectId },
+    where: { projectId, archived: false },
   });
   return tasks;
 };

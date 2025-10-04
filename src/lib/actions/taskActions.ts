@@ -13,6 +13,7 @@ const createTaskSchema = z.object({
   projectId: z.string().min(1, { message: "Project ID is required" }),
   // assignedToId: z.string().optional(),
   level: z.number().min(0).optional(),
+  // archived: z.boolean().optional(),
 });
 
 export async function createTask(data: {
@@ -52,6 +53,7 @@ export async function createTask(data: {
       projectId: data.projectId,
       assignedToId: data.assignedToId || null,
       level: data.level || 0,
+      archived: false,
     },
   });
 
@@ -76,6 +78,7 @@ export async function updateTask(data: {
   assignedToId?: string | null;
   level?: number;
   projectId: string;
+  archived: boolean;
 }) {
   const validation = createTaskSchema.partial().safeParse(data);
 
@@ -118,6 +121,19 @@ export async function updateLevelAndStatus(
   await prisma.task.update({
     where: { id: taskId },
     data: { status, level },
+  });
+
+  revalidatePath(`/dashboards/${projectId}`);
+}
+
+export async function archiveTask(
+  taskId: string,
+  projectId: string,
+  archived: boolean
+) {
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { archived: !archived },
   });
 
   revalidatePath(`/dashboards/${projectId}`);
