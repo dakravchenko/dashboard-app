@@ -204,7 +204,7 @@ export default function TaskDialog({
                 ...values,
                 projectId: projectId,
                 dueDate: values.dueDate ? new Date(values.dueDate) : null,
-                id: fetchedValues?.id!,
+                id: fetchedValues?.id || "",
               };
               const result = fetchedValues
                 ? await updateTask(body)
