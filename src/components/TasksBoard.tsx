@@ -15,6 +15,8 @@ import { updateLevelAndStatus } from "@/lib/actions/taskActions";
 import { TaskStatus } from "@prisma/client";
 import NavAvatar from "./NavAvatar";
 import { useRouter } from "next/navigation";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { slugify } from "@/helpers/format";
 
 const columns: { id: TaskStatus; label: string }[] = [
   { id: "TODO", label: "To Do" },
@@ -32,6 +34,14 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
   const [tasks, setTasks] = useState<OptionalTask[]>(initialTasks);
   const [dialogOpen, setDialogOpen] = useState(false);
   const router = useRouter();
+
+  const shouldShowDueDateWarning = (
+    dueDate: Date | null,
+    status: TaskStatus
+  ) => {
+    if (status === "DONE" || !dueDate) return false;
+    return true;
+  };
 
   const onDragEnd = async (result: DropResult) => {
     const { destination, source } = result;
@@ -138,10 +148,10 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            sx={{ mb: 1 }}
+                            sx={{ mb: 1, cursor: "pointer" }}
                             onClick={() => {
                               router.push(
-                                `/dashboards/${projectId}/${task.number}`
+                                `/dashboards/${projectId}/${task.number}-${slugify(task.title)}`
                               );
                             }}
                           >
@@ -168,14 +178,17 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                                   alignItems="center"
                                   justifyContent="flex-start"
                                 >
-                                  {task.dueDate && (
+                                  {shouldShowDueDateWarning(
+                                    task.dueDate,
+                                    task.status
+                                  ) && (
                                     <Typography
                                       variant="body2"
                                       sx={{ mr: 2, fontStyle: "italic" }}
                                     >
                                       Due:{" "}
                                       {new Date(
-                                        task.dueDate
+                                        task.dueDate!
                                       ).toLocaleDateString()}
                                     </Typography>
                                   )}
@@ -198,7 +211,10 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                                   )}
                                 </Box>
                               </Box>
-                              {task.dueDate && (
+                              {shouldShowDueDateWarning(
+                                task.dueDate,
+                                task.status
+                              ) && (
                                 <Typography
                                   variant="body2"
                                   sx={{
@@ -209,7 +225,7 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                                 >
                                   {(() => {
                                     const today = new Date();
-                                    const dueDate = new Date(task.dueDate);
+                                    const dueDate = new Date(task.dueDate!);
                                     const diffInTime =
                                       dueDate.getTime() - today.getTime();
                                     const diffInDays = Math.ceil(
@@ -223,6 +239,21 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                                       diffInDays <= 7
                                     ) {
                                       return `${diffInDays} day${diffInDays > 1 ? "s" : ""} before due date`;
+                                    } else if (diffInDays < 0) {
+                                      return (
+                                        <Box
+                                          style={{
+                                            color: "red",
+                                            display: "flex",
+                                            alignItems: "center",
+                                          }}
+                                        >
+                                          <span style={{ marginRight: "4px" }}>
+                                            Deadline has passed
+                                          </span>
+                                          <WarningAmberIcon />
+                                        </Box>
+                                      );
                                     } else {
                                       return null;
                                     }

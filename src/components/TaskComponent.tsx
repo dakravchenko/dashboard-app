@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { ReducedUser } from "@/types/user";
 import { Task } from "@prisma/client";
@@ -10,17 +10,19 @@ type Props = {
   projectId: string;
   fetchedValues?: Task;
 };
+
 export default function TaskComponent({
   users,
   projectId,
   fetchedValues,
 }: Props) {
   const router = useRouter();
+
   return (
     <TaskDialog
       fetchedValues={fetchedValues}
       open={true}
-      onClose={router.back}
+      onClose={() => router.push(`/dashboards/${projectId}`)}
       users={users}
       projectId={projectId}
       setTasks={() => {}}

@@ -11,7 +11,7 @@ const createTaskSchema = z.object({
   priority: z.enum(TaskPriority),
   dueDate: z.date().nullable().optional(),
   projectId: z.string().min(1, { message: "Project ID is required" }),
-  assignedToId: z.string().optional(),
+  // assignedToId: z.string().optional(),
   level: z.number().min(0).optional(),
 });
 
@@ -25,7 +25,6 @@ export async function createTask(data: {
   assignedToId: string | null;
   level?: number;
 }) {
-
   const validation = createTaskSchema.safeParse(data);
 
   if (!validation.success) {
@@ -67,19 +66,17 @@ export async function deleteTask(taskId: string, projectId: string) {
   revalidatePath(`/dashboards/${projectId}`);
 }
 
-export async function updateTask(
-  taskId: string,
-  data: {
-    title?: string;
-    description?: string | null;
-    status?: TaskStatus;
-    priority?: TaskPriority;
-    dueDate?: Date | null;
-    assignedToId?: string | null;
-    level?: number;
-  },
-  projectId: string
-) {
+export async function updateTask(data: {
+  id: string;
+  title?: string;
+  description?: string | null;
+  status?: TaskStatus;
+  priority?: TaskPriority;
+  dueDate?: Date | null;
+  assignedToId?: string | null;
+  level?: number;
+  projectId: string;
+}) {
   const validation = createTaskSchema.partial().safeParse(data);
 
   if (!validation.success) {
@@ -97,8 +94,8 @@ export async function updateTask(
     };
   }
 
-  await prisma.task.update({
-    where: { id: taskId },
+  const task = await prisma.task.update({
+    where: { id: data.id },
     data: {
       ...data,
       description: data.description || undefined,
@@ -107,9 +104,9 @@ export async function updateTask(
     },
   });
 
-  revalidatePath(`/dashboards/${projectId}`);
+  revalidatePath(`/dashboards/${data.projectId}`);
 
-  return { success: true };
+  return { success: true, task };
 }
 
 export async function updateLevelAndStatus(

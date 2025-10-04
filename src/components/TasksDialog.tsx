@@ -22,7 +22,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ReducedUser } from "@/types/user";
-import { createTask } from "@/lib/actions/taskActions";
+import { createTask, updateTask } from "@/lib/actions/taskActions";
 
 type Props = {
   open: boolean;
@@ -180,11 +180,15 @@ export default function TaskDialog({
           <Button onClick={onClose}>Cancel</Button>
           <Button
             onClick={async () => {
-              const result = await createTask({
+              const body = {
                 ...values,
-                dueDate: values.dueDate ? new Date(values.dueDate) : null,
                 projectId: projectId,
-              });
+                dueDate: values.dueDate ? new Date(values.dueDate) : null,
+                id: fetchedValues?.id!,
+              };
+              const result = fetchedValues
+                ? await updateTask(body)
+                : await createTask(body);
 
               if (!result.success) {
                 setErrors(result.errors ?? {});
