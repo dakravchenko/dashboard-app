@@ -59,26 +59,30 @@ dashboard-app/
 ```
 
 # 🧠 Technologies Used
-Framework	Next.js (App Router)
-Language	TypeScript
-UI Library	Material UI (MUI)
-ORM	Prisma
-Linting	ESLint + Prettier
-Deployment	Vercel
+| Category | Technology |
+|-----------|-------------|
+| **Framework** | Next.js (App Router) |
+| **Language** | TypeScript |
+| **UI Library** | Material UI (MUI) |
+| **ORM** | Prisma |
+| **Linting** | ESLint + Prettier |
+| **Deployment** | Vercel |
 
 # 🧩 Getting Started
-Clone repository
+```bash
+# 1️⃣ Clone repository
 git clone https://github.com/dakravchenko/dashboard-app.git
 cd dashboard-app
 
-Install dependencies
+# 2️⃣ Install dependencies
 pnpm install
 
-Initialize database
+# 3️⃣ (Optional) Initialize database
 pnpm prisma migrate dev
 
-Run development server
+# 4️⃣ Run development server
 pnpm dev
+```
 
 Then visit http://localhost:3000
 
@@ -86,3 +90,4 @@ Then visit http://localhost:3000
 - backend sorting is not persistent (some tasks have the same level property)
 # 🚧 To Be Implemented
 - task table view
+- loading states and components 
