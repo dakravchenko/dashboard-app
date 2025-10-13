@@ -24,11 +24,10 @@ const DatePicker = dynamic(
 );
 type Props = {
   users: ReducedUser[];
-  tasks: Task[];
   project?: FullProject;
 };
 
-export default function CreateProjectForm({ users, tasks, project }: Props) {
+export default function CreateProjectForm({ users, project }: Props) {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -196,25 +195,28 @@ export default function CreateProjectForm({ users, tasks, project }: Props) {
             )}
           />
         </Grid>
-        <Grid size={{ xs: 12 }}>
-          <Autocomplete
-            multiple
-            options={tasks}
-            getOptionLabel={(option) => option.title}
-            value={formData.tasks}
-            onChange={handleTaskChange}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Select Tasks"
-                placeholder="Select Tasks"
-                fullWidth
-                error={!!errors.tasks}
-                helperText={errors.tasks}
-              />
-            )}
-          />
-        </Grid>
+        {/* {formData.tasks.length > 0 && (
+          <Grid size={{ xs: 12 }}>
+            <Autocomplete
+              multiple
+              options={formData.tasks}
+              getOptionLabel={(option) => option.title}
+              value={formData.tasks}
+              onChange={handleTaskChange}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select Tasks"
+                  placeholder="Select Tasks"
+                  fullWidth
+                  error={!!errors.tasks}
+                  helperText={errors.tasks}
+                />
+              )}
+            />
+          </Grid>
+        )} */}
+
         <Grid size={{ xs: 4 }}>
           <TextField
             label="Location Name"
