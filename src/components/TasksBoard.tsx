@@ -6,7 +6,14 @@ import {
   Draggable,
   DropResult,
 } from "@hello-pangea/dnd";
-import { Card, CardContent, Button, Typography, Box } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+} from "@mui/material";
 import { useState } from "react";
 import TaskDialog from "./TasksDialog";
 import { OptionalTask } from "@/types/task";
@@ -34,6 +41,7 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
   const [tasks, setTasks] = useState<OptionalTask[]>(initialTasks);
   const [dialogOpen, setDialogOpen] = useState(false);
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
   const shouldShowDueDateWarning = (
     dueDate: Date | null,
@@ -150,11 +158,25 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
                             {...provided.dragHandleProps}
                             sx={{ mb: 1, cursor: "pointer" }}
                             onClick={() => {
+                              setLoading(true);
                               router.push(
                                 `/dashboards/${projectId}/${task.number}-${slugify(task.title)}`
                               );
                             }}
                           >
+                            {loading && (
+                              <Box
+                                sx={{
+                                  position: "absolute",
+                                  top: "50%",
+                                  left: "50%",
+                                  transform: "translate(-50%, -50%)",
+                                  zIndex: 1,
+                                }}
+                              >
+                                <CircularProgress size={24} />
+                              </Box>
+                            )}
                             <CardContent>
                               <Typography variant="h6">{task.title}</Typography>
                               <Typography

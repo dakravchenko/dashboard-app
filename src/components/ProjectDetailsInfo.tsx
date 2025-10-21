@@ -1,7 +1,6 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import NavAvatar from "./NavAvatar";
-import { Project, User } from "@prisma/client";
 import { FullProject, ReducedUser } from "@/types/user";
 
 type Props = {
@@ -9,7 +8,7 @@ type Props = {
   members: ReducedUser[];
 };
 
-export async function ProjectDetailsInfo({ project, members }: Props) {
+export async function ProjectDetailsInfo({ project }: Props) {
   return (
     <Paper elevation={2} sx={{ p: 2, borderRadius: 2, mb: 4 }}>
       <Grid container spacing={2}>

@@ -8,13 +8,12 @@ import Grid from "@mui/material/Grid";
 import { useEffect, useState } from "react";
 import { ProjectStatus, ResourceType, Task } from "@prisma/client";
 import { dateFormats } from "@/app/localization";
-import { Button, Typography, Box, Paper, Chip, Avatar } from "@mui/material";
+import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { createProject, updateProject } from "@/lib/actions/projectActions";
 import { FullProject, ReducedUser } from "@/types/user";
 
 import dynamic from "next/dynamic";
-import NavAvatar from "./NavAvatar";
 
 const DatePicker = dynamic(
   () =>
