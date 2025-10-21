@@ -12,6 +12,7 @@ export default async function ProjectPage({
 
   return (
     <>
+      {/*apperently suspense works only for server components */}
       <Suspense
         fallback={
           <Skeleton variant="rectangular" height={200} sx={{ mb: 4 }} />
@@ -19,14 +20,16 @@ export default async function ProjectPage({
       >
         <ProjectDetails projectId={id} />
       </Suspense>
-
+      {/*
       <Suspense
         fallback={
           <Skeleton variant="rectangular" height={400} sx={{ mb: 4 }} />
         }
       >
         <ProjectTasks projectId={id} />
-      </Suspense>
+      </Suspense> */}
+
+      <ProjectTasks projectId={id} />
     </>
   );
 }
