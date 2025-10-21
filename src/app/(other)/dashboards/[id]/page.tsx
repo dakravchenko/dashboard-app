@@ -1,25 +1,32 @@
-import CreateProjectForm from "@/components/CreateProjectForm";
-import TaskBoard from "@/components/TasksBoard";
-import { getProjectById } from "@/lib/getProjects";
-import { getUnarchivedTasksByProjectId } from "@/lib/getTasks";
-import { getUsersByProjectId } from "@/lib/getUsers";
+import { Suspense } from "react";
+import Skeleton from "@mui/material/Skeleton";
+import ProjectDetails from "@/components/ProjectDetails";
+import ProjectTasks from "@/components/ProjectTasks";
 
-type Props = {
+export default async function ProjectPage({
+  params,
+}: {
   params: Promise<{ id: string }>;
-};
-
-export default async function ProjectPage({ params }: Props) {
+}) {
   const { id } = await params;
-  const [users, tasks, project] = await Promise.all([
-    getUsersByProjectId(id),
-    getUnarchivedTasksByProjectId(id),
-    getProjectById(id),
-  ]);
 
   return (
     <>
-      <CreateProjectForm users={users} project={project!} isReadOnly={true} />
-      <TaskBoard initialTasks={tasks} users={users} projectId={id} />
+      <Suspense
+        fallback={
+          <Skeleton variant="rectangular" height={200} sx={{ mb: 4 }} />
+        }
+      >
+        <ProjectDetails projectId={id} />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <Skeleton variant="rectangular" height={400} sx={{ mb: 4 }} />
+        }
+      >
+        <ProjectTasks projectId={id} />
+      </Suspense>
     </>
   );
 }
