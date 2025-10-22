@@ -1,7 +1,48 @@
 # 📦 Deployment
 
-The application is deployed on Vercel. You can access the live demo here:
+🚀 Live Demo
+
+The application is deployed on Vercel and accessible here:
+
 👉 https://dashboard-app-livid-omega.vercel.app/
+
+🔐 Test Login Credentials
+| Role   | Email          | Password |
+| ------ | -------------- | -------- |
+| Admin  | `a@gmail.com`  | `123`    |
+| Member | `dk@gmail.com` | `123`    |
+
+✨ Features
+🧠 Core Architecture & Performance
+
+Server Actions & Server Routes (executed from client) — modern Next.js architecture using direct server mutations (no API layer required)
+
+App Router (Next.js) — built entirely using the new App Router with nested layouts & React Server Components
+
+Loading & Suspense Boundaries (Server Components) — granular async UI rendering using Suspense
+
+🗂 Data & Task Management
+
+Task Board (Drag & Drop Kanban) — interactive draggable Kanban for real-time task management
+
+Task Table with URL-Synced State — pagination, filters & sorting fully reflected in the URL (supports deep linking & shareable views)
+
+🎨 UX & UI
+
+Dark / Light Mode — system-aware theming with persistent user preference
+
+Loading Context for Client Components — centralized async loading feedback for smoother UX
+
+🔒 Access & Security
+
+Authentication & Session Handling — secure login with protected routes and persistent auth state
+
+Role-Based Access Control (RBAC) — separate routes, components, and permissions for Admin and Member users
+
+👤 Admin Functionality
+
+User Management (Admin only) — admin can view and manage users directly
+
 
 
 # 📊 Dashboard App
@@ -89,5 +130,4 @@ Then visit http://localhost:3000
 # 🐞 Known Issues
 - backend sorting is not persistent (some tasks have the same level property)
 # 🚧 To Be Implemented
-- task table view
-- loading states and components 
+
