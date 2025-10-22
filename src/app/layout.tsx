@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import ClientLayout from "./ClientLayout";
 import ThemeWrapper from "@/components/ThemeWrapper";
+import { LoadingProvider } from "./_providers/LoadingProvider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,7 +30,9 @@ export default async function RootLayout({
       <body className={`${inter.variable}`}>
         <ThemeWrapper>
           <ClientLayout>
-            <div className="app-root">{children}</div>
+            <LoadingProvider>
+              <div className="app-root">{children}</div>
+            </LoadingProvider>
           </ClientLayout>
         </ThemeWrapper>
       </body>
