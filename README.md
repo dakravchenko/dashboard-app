@@ -12,7 +12,8 @@ The application is deployed on Vercel and accessible here:
 | Admin  | `a@gmail.com`  | `123`    |
 | Member | `dk@gmail.com` | `123`    |
 
-✨ Features
+# 🚀 Features
+
 🧠 Core Architecture & Performance
 
 Server Actions & Server Routes (executed from client) — modern Next.js architecture using direct server mutations (no API layer required)
@@ -50,7 +51,6 @@ User Management (Admin only) — admin can view and manage users directly
 A modern and responsive dashboard application built with Next.js, TypeScript, and Material UI (MUI).
 It provides a scalable foundation for building admin panels, data visualizations, and analytics tools.
 
-# 🚀 Features
 # 🧩 Frontend
 
 Next.js App Router — optimized routing and server-side rendering.
