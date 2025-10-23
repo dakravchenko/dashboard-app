@@ -202,22 +202,35 @@ export default function TaskDialog({
             onClick={async () => {
               const body = {
                 ...values,
-                projectId: projectId,
+                projectId,
                 dueDate: values.dueDate ? new Date(values.dueDate) : null,
                 id: fetchedValues?.id || "",
               };
+
+              // Call server update or create
               const result = fetchedValues
                 ? await updateTask(body)
                 : await createTask(body);
 
               if (!result.success) {
                 setErrors(result.errors ?? {});
-              } else {
-                if (result.task) {
-                  setTasks((prev) => [...prev, result.task]);
-                }
-                onClose();
+                return;
               }
+
+              if (!result.task) return;
+
+              const updatedTask = { ...result.task, forceRender: Date.now() };
+
+              setTasks((prev) => {
+                if (fetchedValues) {
+                  return prev.map((task) =>
+                    task.id === updatedTask.id ? updatedTask : task
+                  );
+                }
+                return [updatedTask, ...prev];
+              });
+
+              onClose();
             }}
             variant="contained"
           >
