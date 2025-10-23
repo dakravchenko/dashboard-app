@@ -128,6 +128,7 @@ pnpm dev
 Then visit http://localhost:3000
 
 # 🐞 Known Issues
-- backend sorting is not persistent (some tasks have the same level property)
+- backend sorting in kanban is not persistent (some tasks have the same level property)
+- when task is updated or archived changes are reflected in kanban only after refresh. added task works as expected
 # 🚧 To Be Implemented
 
