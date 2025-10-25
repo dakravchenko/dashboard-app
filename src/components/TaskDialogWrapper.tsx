@@ -6,19 +6,32 @@ import { useEffect, useState } from "react";
 import { Task } from "@prisma/client";
 import { ReducedUser } from "@/types/user";
 import { useLoading } from "@/app/_hook/useLoading";
+import { OptionalTask } from "@/types/task";
 
 type Props = {
   projectId: string;
-  taskSlug: string;
+  taskSlug?: string;
   users: ReducedUser[];
+  setTasks: React.Dispatch<React.SetStateAction<OptionalTask[]>>;
 };
 
-export default function TaskSlug({ projectId, taskSlug, users }: Props) {
+export default function TaskSlug({
+  projectId,
+  taskSlug,
+  users,
+  setTasks,
+}: Props) {
   const router = useRouter();
-  const [task, setTask] = useState<Task>();
+  const [task, setTask] = useState<Task | null>(null);
   const setLoading = useLoading();
 
+  const onClose = () => {
+    setTask(null);
+    router.push(`/dashboards/${projectId}`);
+  };
+
   useEffect(() => {
+    if (!taskSlug) return;
     const load = async () => {
       const number = Number(taskSlug.split("-")[0]);
       try {
@@ -36,16 +49,18 @@ export default function TaskSlug({ projectId, taskSlug, users }: Props) {
     load();
   }, [taskSlug, projectId, router]);
 
-  if (!task) return null;
+  if (!task) {
+    return;
+  }
 
   return (
     <TaskDialog
       fetchedValues={task}
-      open={task ? true : false}
-      onClose={() => router.push(`/dashboards/${projectId}`)}
+      open={task !== null}
+      onClose={onClose}
       users={users}
       projectId={projectId}
-      setTasks={() => {}}
+      setTasks={setTasks}
     />
   );
 }

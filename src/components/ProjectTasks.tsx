@@ -1,7 +1,6 @@
 import TaskBoard from "@/components/TasksBoard";
 import { getUnarchivedTasksByProjectId } from "@/lib/getTasks";
 import { getUsersByProjectId } from "@/lib/getUsers";
-import TaskSlug from "./TaskSlug";
 
 type Props = { projectId: string; taskSlug?: string };
 
@@ -12,11 +11,6 @@ export default async function ProjectTasks({ projectId, taskSlug }: Props) {
   ]);
 
   return (
-    <>
-      {taskSlug && (
-        <TaskSlug projectId={projectId} taskSlug={taskSlug} users={users} />
-      )}
-      <TaskBoard initialTasks={tasks} users={users} projectId={projectId} />
-    </>
+      <TaskBoard initialTasks={tasks} users={users} projectId={projectId} taskSlug={taskSlug} />
   );
 }

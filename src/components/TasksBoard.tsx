@@ -8,7 +8,6 @@ import {
 } from "@hello-pangea/dnd";
 import { Card, CardContent, Button, Typography, Box } from "@mui/material";
 import { useState } from "react";
-import TaskDialog from "./TasksDialog";
 import { OptionalTask } from "@/types/task";
 import { ReducedUser } from "@/types/user";
 import { updateLevelAndStatus } from "@/lib/actions/taskActions";
@@ -18,6 +17,8 @@ import { useRouter } from "next/navigation";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import { slugify } from "@/helpers/format";
 import { useLoading } from "@/app/_hook/useLoading";
+import TaskDialog from "./TasksDialog";
+import TaskSlugWrapper from "./TaskDialogWrapper";
 
 const columns: { id: TaskStatus; label: string }[] = [
   { id: "TODO", label: "To Do" },
@@ -29,9 +30,15 @@ type Props = {
   initialTasks: OptionalTask[];
   users: ReducedUser[];
   projectId: string;
+  taskSlug?: string;
 };
 
-export default function TaskBoard({ initialTasks, users, projectId }: Props) {
+export default function TaskBoard({
+  initialTasks,
+  users,
+  projectId,
+  taskSlug,
+}: Props) {
   const [tasks, setTasks] = useState<OptionalTask[]>(initialTasks);
   const [dialogOpen, setDialogOpen] = useState(false);
   const router = useRouter();
@@ -284,14 +291,19 @@ export default function TaskBoard({ initialTasks, users, projectId }: Props) {
           </Droppable>
         ))}
       </Box>
-      <TaskDialog
-        open={dialogOpen}
-        onClose={() => {
-          setDialogOpen(false);
-        }}
+      <TaskSlugWrapper
         users={users}
         projectId={projectId}
         setTasks={setTasks}
+        taskSlug={taskSlug}
+      />
+      <TaskDialog
+        setTasks={setTasks}
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        fetchedValues={null}
+        users={users}
+        projectId={projectId}
       />
     </DragDropContext>
   );

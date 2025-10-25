@@ -29,7 +29,7 @@ import { archiveTask, createTask, updateTask } from "@/lib/actions/taskActions";
 type Props = {
   open: boolean;
   onClose: () => void;
-  fetchedValues?: OptionalTask;
+  fetchedValues: OptionalTask | null;
   users: ReducedUser[];
   projectId: string;
   setTasks: React.Dispatch<React.SetStateAction<OptionalTask[]>>;
@@ -191,13 +191,24 @@ export default function TaskDialog({
                 onClick={() => {
                   archiveTask(values.id!, values.projectId, values.archived);
                   onClose();
+                  setTasks((prev) =>
+                    prev.filter((task) => task.id !== values.id)
+                  );
+                  setValues(defaultTask);
                 }}
               >
                 {values.archived ? "Unarchive" : "Archive"}
               </Button>
             </Box>
           )}
-          <Button onClick={onClose}>Cancel</Button>
+          <Button
+            onClick={() => {
+              onClose();
+              setValues(defaultTask);
+            }}
+          >
+            Cancel
+          </Button>
           <Button
             onClick={async () => {
               const body = {
@@ -207,7 +218,6 @@ export default function TaskDialog({
                 id: fetchedValues?.id || "",
               };
 
-              // Call server update or create
               const result = fetchedValues
                 ? await updateTask(body)
                 : await createTask(body);
@@ -219,18 +229,17 @@ export default function TaskDialog({
 
               if (!result.task) return;
 
-              const updatedTask = { ...result.task, forceRender: Date.now() };
-
               setTasks((prev) => {
                 if (fetchedValues) {
                   return prev.map((task) =>
-                    task.id === updatedTask.id ? updatedTask : task
+                    task.id === result.task.id ? result.task : task
                   );
                 }
-                return [updatedTask, ...prev];
+                return [result.task, ...prev];
               });
 
               onClose();
+              setValues(defaultTask);
             }}
             variant="contained"
           >
