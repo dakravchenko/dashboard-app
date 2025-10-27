@@ -15,7 +15,7 @@ type Props = {
   setTasks: React.Dispatch<React.SetStateAction<OptionalTask[]>>;
 };
 
-export default function TaskSlug({
+export default function TaskSlugWrapper({
   projectId,
   taskSlug,
   users,
