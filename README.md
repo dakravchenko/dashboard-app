@@ -61,8 +61,6 @@ Material UI (MUI) — modern, responsive design system.
 
 Reusable Components — modular structure for widgets, layouts, and UI elements.
 
-Dark/Light Theme Support (if implemented) — consistent theming using MUI’s theme system.
-
 # 🗃️ Backend & Data Layer
 
 Prisma ORM — defines and manages data models for future backend integration.
@@ -129,6 +127,6 @@ Then visit http://localhost:3000
 
 # 🐞 Known Issues
 - backend sorting in kanban is not persistent (some tasks have the same level property)
-- when task is updated or archived changes are reflected in kanban only after refresh. added task works as expected
 # 🚧 To Be Implemented
+- Task Cards from Task Table view
 
