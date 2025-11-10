@@ -152,7 +152,9 @@ export function TasksTable() {
         open={!!dialogTask}
         onClose={() => setDialogTask(null)}
         fetchedValues={dialogTask}
-        users={usersByProject[dialogTask?.projectId!] || []}
+        users={
+          dialogTask?.projectId ? usersByProject[dialogTask?.projectId] : []
+        }
         projectId={dialogTask?.projectId || ""}
         setTasks={(updatedTasks) => setRows(updatedTasks)}
       />
