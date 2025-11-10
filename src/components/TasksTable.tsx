@@ -7,12 +7,13 @@ import { Task } from "@prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import TaskDialog from "./TasksDialog";
+import { OptionalTask } from "@/types/task";
 
 export function TasksTable() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [rows, setRows] = useState<Task[]>([]);
+  const [rows, setRows] = useState<OptionalTask[]>([]);
   const [loading, setLoading] = useState(false);
   const [rowCount, setRowCount] = useState(0);
   const [usersByProject, setUsersByProject] = useState<
