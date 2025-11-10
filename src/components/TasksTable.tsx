@@ -1,11 +1,12 @@
 "use client";
 
+import { ReducedUser } from "@/types/user";
 import { GridFilterModel } from "@mui/x-data-grid";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Task } from "@prisma/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import TaskDialog from "./TasksDialog";
 
 export function TasksTable() {
   const router = useRouter();
@@ -14,6 +15,22 @@ export function TasksTable() {
   const [rows, setRows] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [rowCount, setRowCount] = useState(0);
+  const [usersByProject, setUsersByProject] = useState<
+    Record<string, ReducedUser[]>
+  >({});
+  const [dialogTask, setDialogTask] = useState<Task | null>(null);
+
+  async function ensureUsersLoaded(projectId: string) {
+    if (usersByProject[projectId]) return;
+
+    const res = await fetch(`/api/users/${projectId}`, { cache: "no-store" });
+    const data = await res.json();
+
+    setUsersByProject((prev) => ({
+      ...prev,
+      [projectId]: data,
+    }));
+  }
 
   const page = Number(searchParams.get("page") || 0);
   const pageSize = Number(searchParams.get("pageSize") || 10);
@@ -123,6 +140,20 @@ export function TasksTable() {
           setFilterField(firstFilter?.field || "");
           setFilterValue(firstFilter?.value || "");
         }}
+        onRowClick={async (params) => {
+          const projectId = params.row.projectId;
+
+          setDialogTask(params.row);
+          await ensureUsersLoaded(projectId);
+        }}
+      />
+      <TaskDialog
+        open={!!dialogTask}
+        onClose={() => setDialogTask(null)}
+        fetchedValues={dialogTask}
+        users={usersByProject[dialogTask?.projectId!] || []}
+        projectId={dialogTask?.projectId || ""}
+        setTasks={(updatedTasks) => setRows(updatedTasks)}
       />
     </div>
   );

@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { TaskPriority, TaskStatus } from "@prisma/client";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { ReducedUser } from "@/types/user";
@@ -55,10 +55,16 @@ export default function TaskDialog({
   projectId,
   setTasks,
 }: Props) {
-  const [values, setValues] = useState<OptionalTask>(
-    fetchedValues || defaultTask
-  );
+  const [values, setValues] = useState<OptionalTask>(defaultTask);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (fetchedValues) {
+      setValues(fetchedValues);
+    } else {
+      setValues(defaultTask);
+    }
+  }, [fetchedValues]);
 
   const handleChange = <K extends keyof OptionalTask>(
     field: K,
@@ -81,6 +87,7 @@ export default function TaskDialog({
             error={!!errors.title}
             helperText={errors.title}
             onChange={(e) => handleChange("title", e.target.value)}
+            disabled={values.archived}
           />
 
           <TextField
@@ -93,6 +100,7 @@ export default function TaskDialog({
             error={!!errors.description}
             helperText={errors.description}
             onChange={(e) => handleChange("description", e.target.value)}
+            disabled={values.archived}
           />
 
           <Grid container spacing={2} mt={2}>
@@ -105,6 +113,7 @@ export default function TaskDialog({
                   onChange={(e) =>
                     handleChange("status", e.target.value as TaskStatus)
                   }
+                  disabled={values.archived}
                 >
                   <MenuItem value="TODO">To Do</MenuItem>
                   <MenuItem value="IN_PROGRESS">In Progress</MenuItem>
@@ -122,6 +131,7 @@ export default function TaskDialog({
                   onChange={(e) =>
                     handleChange("priority", e.target.value as TaskPriority)
                   }
+                  disabled={values.archived}
                 >
                   <MenuItem value="LOW">Low</MenuItem>
                   <MenuItem value="MEDIUM">Medium</MenuItem>
@@ -139,6 +149,7 @@ export default function TaskDialog({
                 onChange={(value) =>
                   handleChange("dueDate", value as Date | null)
                 }
+                disabled={values.archived}
                 slotProps={{
                   textField: {
                     variant: "outlined",
@@ -163,6 +174,7 @@ export default function TaskDialog({
                 onChange={(_, newValue) => {
                   handleChange("assignedToId", newValue ? newValue.id : "");
                 }}
+                disabled={values.archived}
                 renderInput={(params) => (
                   <TextField
                     {...params}
