@@ -157,6 +157,7 @@ export function TasksTable() {
         }
         projectId={dialogTask?.projectId || ""}
         setTasks={(updatedTasks) => setRows(updatedTasks)}
+        isTableComponent={true}
       />
     </div>
   );

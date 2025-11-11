@@ -33,6 +33,7 @@ type Props = {
   users: ReducedUser[];
   projectId: string;
   setTasks: React.Dispatch<React.SetStateAction<OptionalTask[]>>;
+  isTableComponent?: boolean;
 };
 
 const defaultTask = {
@@ -54,6 +55,7 @@ export default function TaskDialog({
   users,
   projectId,
   setTasks,
+  isTableComponent,
 }: Props) {
   const [values, setValues] = useState<OptionalTask>(defaultTask);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -200,11 +202,21 @@ export default function TaskDialog({
               }}
             >
               <Button
-                onClick={() => {
-                  archiveTask(values.id!, values.projectId, values.archived);
+                onClick={async () => {
+                  const result = await archiveTask(
+                    values.id!,
+                    values.projectId,
+                    values.archived
+                  );
                   onClose();
                   setTasks((prev) =>
-                    prev.filter((task) => task.id !== values.id)
+                    isTableComponent
+                      ? prev.map((task) => {
+                          return task.id === result.task.id
+                            ? result.task
+                            : task;
+                        })
+                      : prev.filter((task) => task.id !== values.id)
                   );
                   setValues(defaultTask);
                 }}

@@ -1,6 +1,6 @@
 "use server";
 import { TaskPriority, TaskStatus } from "@prisma/client";
-import z from "zod";
+import z, { success } from "zod";
 import prisma from "../prisma";
 import { revalidatePath } from "next/cache";
 
@@ -131,10 +131,12 @@ export async function archiveTask(
   projectId: string,
   archived: boolean
 ) {
-  await prisma.task.update({
+  const task = await prisma.task.update({
     where: { id: taskId },
     data: { archived: !archived },
   });
 
   revalidatePath(`/dashboards/${projectId}`);
+
+  return { success: true, task };
 }

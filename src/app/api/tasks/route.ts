@@ -43,6 +43,12 @@ export async function GET(req: NextRequest) {
           createdAt: true,
           updatedAt: true,
           archived: true,
+          project: {
+            select: { title: true },
+          },
+          assignedTo: {
+            select: { email: true },
+          },
         },
       }),
       prisma.task.count({ where }),
