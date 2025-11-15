@@ -7,4 +7,4 @@ import { Task } from "@prisma/client";
 //     number?: number;
 //   };
 
-export type OptionalTask = Partial<Task>;
+export type OptionalTask = Partial<Omit<Task, 'level'>> & { level: Task['level'] };
